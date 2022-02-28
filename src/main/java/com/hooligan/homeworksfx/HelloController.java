@@ -27,6 +27,7 @@ public class HelloController {
     @FXML
     private Button sendButton;
 
+    
     @FXML
     private MenuItem menuItemClear;
 
