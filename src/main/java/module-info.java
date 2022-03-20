@@ -12,4 +12,6 @@ module com.hooligan.homeworksfx {
 
     opens com.hooligan.homeworksfx to javafx.fxml;
     exports com.hooligan.homeworksfx;
+    exports com.hooligan.homeworksfx.controllers;
+    opens com.hooligan.homeworksfx.controllers to javafx.fxml;
 }
