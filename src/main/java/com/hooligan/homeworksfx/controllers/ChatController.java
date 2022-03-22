@@ -51,7 +51,7 @@ public class ChatController {
             textField.clear();
         }
 
-        network.sendMessage(message);
+//        network.sendMessage(message);
     }
 
     public void appendMessage(String message) {
