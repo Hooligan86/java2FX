@@ -9,6 +9,15 @@ import java.net.Socket;
 
 public class Network {
 
+    private static final String AUTH_CMD_PREFIX = "/auth"; // + login + password
+    private static final String AUTHOK_CMD_PREFIX = "/authok"; // + username
+    private static final String AUTHERR_CMD_PREFIX = "/autherr"; // + error message
+    private static final String CLIENT_MSG_CMD_PREFIX = "/cmsg"; // + msg
+    private static final String SERVER_MSG_CMD_PREFIX = "/smsg"; // + server msg
+    private static final String PRIVATE_MSG_CMD_PREFIX = "/pmsg"; // + private msg
+    private static final String STOP_SERVER_CMD_PREFIX = "/stop";
+    private static final String END_CLIENT_CMD_PREFIX = "/end";
+
     public static final String DEFAULT_HOST = "localhost";
     public static final int DEFAULT_PORT = 8186;
     private DataInputStream in;
@@ -47,6 +56,7 @@ public class Network {
     public void sendMessage(String message) {
         try {
             out.writeUTF(message);
+            System.out.println(message);
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("The message didn't send");
@@ -55,18 +65,20 @@ public class Network {
 
     public void waitMessage(ChatController chatController) {
         Thread t = new Thread(() -> {
-            try {
-                while (true) {
+        try {
+            while (true) {
 
-                    String message = in.readUTF();
-                    chatController.appendMessage(message);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+                String message = in.readUTF();
+                chatController.appendMessage("I: " + message);
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         });
-        t.setDaemon(true);
-        t.start();
 
+        t.isDaemon();
+        t.start();
     }
+
 }
+

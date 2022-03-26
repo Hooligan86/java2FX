@@ -18,7 +18,7 @@ public class ChatController {
     @FXML
     private ListView<String> users = new ListView<>();
 
-    ObservableList<String> userList = FXCollections.observableArrayList("Alex","Lukas","David");
+    ObservableList<String> userList = FXCollections.observableArrayList("Alex", "Lukas", "David");
 
     @FXML
     private TextField textField;
@@ -37,31 +37,34 @@ public class ChatController {
         this.network = network;
     }
 
-    public void waitMessage(ChatController chatController){
+    public void waitMessage(ChatController chatController) {
 
     }
 
-    @FXML
-    void sendMessage() {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
-        String message = chatField.getText().trim() + "\n" + "(" + simpleDateFormat.format(new Date()) + ") " + textField.getText();
-        if(!textField.getText().isBlank()) {
-            appendMessage(message);
-//
-            textField.clear();
-        }
-
-//        network.sendMessage(message);
-    }
-
-    public void appendMessage(String message) {
-        chatField.setText(message);
-    }
 
     @FXML
     void initialize() {
         textField.setOnAction(event -> sendMessage());
         sendButton.setOnAction(event -> sendMessage());
         users.setItems(userList);
+    }
+
+    public void sendMessage() {
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
+//        String message = chatField.getText().trim() + "\n" + "(" + simpleDateFormat.format(new Date()) + ") " + textField.getText();
+        String message = textField.getText().trim();
+        textField.clear();
+
+        if (message.trim().isEmpty()) {
+            return;
+        }
+
+        network.sendMessage(message);
+        appendMessage(message);
+    }
+
+    public void appendMessage(String message) {
+        chatField.appendText(message);
+        chatField.appendText(System.lineSeparator());
     }
 }
