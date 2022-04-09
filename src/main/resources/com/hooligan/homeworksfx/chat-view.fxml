@@ -49,12 +49,22 @@
                         <Insets left="10.0" />
                      </padding>
                   </Label>
-                  <ListView fx:id="users" layoutY="31.0" prefHeight="271.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0" />
+                  <ListView fx:id="usersList" layoutY="31.0" prefHeight="271.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="25.0" />
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
-                  <TextArea fx:id="chatField" editable="false" prefHeight="311.0" prefWidth="411.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <TextArea fx:id="chatField" editable="false" layoutY="54.0" prefHeight="252.0" prefWidth="401.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="54.0" />
+                  <Label fx:id="usernameTitle" layoutX="289.0" layoutY="14.0" prefHeight="35.0" prefWidth="112.0" text="User">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="23.0" layoutY="14.0" text="Chat">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
                </children>
             </AnchorPane>
         </items>

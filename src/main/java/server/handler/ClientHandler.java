@@ -7,6 +7,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.List;
 
 public class ClientHandler {
 
@@ -15,9 +16,10 @@ public class ClientHandler {
     private static final String AUTHERR_CMD_PREFIX = "/autherr"; // + error message
     private static final String CLIENT_MSG_CMD_PREFIX = "/cmsg"; // + msg
     private static final String SERVER_MSG_CMD_PREFIX = "/smsg"; // + server msg
-    private static final String PRIVATE_MSG_CMD_PREFIX = "/pmsg"; // + private msg
+    private static final String PRIVATE_MSG_CMD_PREFIX = "/pmsg"; // client + private msg
     private static final String STOP_SERVER_CMD_PREFIX = "/stop";
     private static final String END_CLIENT_CMD_PREFIX = "/end";
+    private static final String GET_CLIENTS_CMD_PREFIX = "AAAAAA";
 
     private MyServer myServer;
     private Socket clientSocket;
@@ -41,6 +43,12 @@ public class ClientHandler {
                 readMessage();
             } catch (IOException e) {
                 e.printStackTrace();
+                myServer.unSubscribe(this);
+                try {
+                    myServer.broadcastClientsDisconnected(this);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
         }).start();
     }
@@ -77,15 +85,21 @@ public class ClientHandler {
                 out.writeUTF(AUTHERR_CMD_PREFIX + " Login already busy");
                 return false;
             }
-
             out.writeUTF(AUTHOK_CMD_PREFIX + " " + username);
-            myServer.subscribe(this);
-            System.out.println("Client " + username + " connected to chat");
+
+            connectUser(username);
+
             return true;
         } else {
             out.writeUTF(AUTHERR_CMD_PREFIX + " Login or password not correct");
             return false;
         }
+    }
+
+    private void connectUser(String username) throws IOException {
+        myServer.subscribe(this);
+        System.out.println("Client " + username + " connected to chat");
+        myServer.broadcastClients(this);
     }
 
     private void readMessage() throws IOException {
@@ -96,9 +110,13 @@ public class ClientHandler {
                 System.exit(0);
             } else if (message.startsWith(END_CLIENT_CMD_PREFIX)) {
                 return;
-            }else if(message.startsWith(PRIVATE_MSG_CMD_PREFIX)){
-                myServer.broadcastPrivateMessage(message,this);
-            }else{
+            } else if (message.startsWith(PRIVATE_MSG_CMD_PREFIX)) {
+                String[] parts = message.split("\\s+", 3);
+                String recipient = parts[1];
+                String privateMessage = parts[2];
+
+                myServer.sendPrivateMessage(this, recipient, privateMessage);
+            } else {
                 myServer.broadcastMessage(message, this);
             }
 
@@ -107,10 +125,33 @@ public class ClientHandler {
     }
 
     public void sendMessage(String sender, String message) throws IOException {
+        if (sender != null) {
+            sendClientMessage(sender, message);
+        } else {
+            sendServerMessage(message);
+        }
+    }
+
+    public void sendServerMessage(String message) throws IOException {
+        out.writeUTF(String.format("%s %s", SERVER_MSG_CMD_PREFIX, message));
+    }
+
+    public void sendClientMessage(String sender, String message) throws IOException {
         out.writeUTF(String.format("%s %s %s", CLIENT_MSG_CMD_PREFIX, sender, message));
     }
 
     public String getUsername() {
+        return username;
+    }
+
+    public void sendClientsList(List<ClientHandler> clients) throws IOException {
+        String msg = String.format("%s %s", GET_CLIENTS_CMD_PREFIX, clients.toString());
+        out.writeUTF(msg);
+        System.out.println(msg);
+    }
+
+    @Override
+    public String toString() {
         return username;
     }
 }
