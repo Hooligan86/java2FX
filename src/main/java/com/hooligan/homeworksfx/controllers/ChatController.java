@@ -31,24 +31,11 @@ public class ChatController {
     @FXML
     private Label usernameTitle;
 
-    @FXML
-    void clearChatField() {
-        chatField.clear();
-    }
-
     private Network network;
-
-    public void setNetwork(Network network) {
-        this.network = network;
-    }
-
-    public void waitMessage(ChatController chatController) {
-
-    }
 
     @FXML
     void initialize() {
-        usersList.setItems(FXCollections.observableArrayList("Martin_cat", "Bruce_wain", "Gray_Gandalf"));
+//        usersList.setItems(FXCollections.observableArrayList("Martin_cat", "Bruce_wain", "Gray_Gandalf"));
 
         textField.setOnAction(event -> sendMessage());
         sendButton.setOnAction(event -> sendMessage());
@@ -75,6 +62,15 @@ public class ChatController {
         });
     }
 
+    @FXML
+    void clearChatField() {
+        chatField.clear();
+    }
+
+    public void setNetwork(Network network) {
+        this.network = network;
+    }
+
     public void sendMessage() {
         String message = textField.getText().trim();
         textField.clear();
@@ -90,6 +86,10 @@ public class ChatController {
         }
 //        network.sendMessage(message);
         appendMessage("I: " + message);
+    }
+
+    public void waitMessage(ChatController chatController) {
+
     }
 
     public void appendMessage(String message) {

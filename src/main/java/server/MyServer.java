@@ -24,6 +24,7 @@ public class MyServer {
     }
 
     public void start() {
+        authenticationService.startAuthentication();
         System.out.println("Server running");
         System.out.println("-------------------------------");
 
