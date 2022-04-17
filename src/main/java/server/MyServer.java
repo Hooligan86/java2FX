@@ -2,6 +2,7 @@ package server;
 
 import server.authentication.AuthenticationService;
 import server.authentication.BaseAuthenticationService;
+import server.authentication.DBAuthenticationService;
 import server.handler.ClientHandler;
 
 import java.io.IOException;
@@ -18,7 +19,7 @@ public class MyServer {
 
     public MyServer(int port) throws IOException {
         serverSocket = new ServerSocket(port);
-        authenticationService = new BaseAuthenticationService();
+        authenticationService = new DBAuthenticationService();
         clients = new ArrayList<>();
     }
 
@@ -33,6 +34,8 @@ public class MyServer {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }finally {
+            authenticationService.endAuthentication();
         }
     }
 
@@ -47,10 +50,6 @@ public class MyServer {
     private void processClientConnection(Socket socket) throws IOException {
         ClientHandler clientHandler = new ClientHandler(this, socket);
         clientHandler.handle();
-    }
-
-    public AuthenticationService getAuthenticationService() {
-        return authenticationService;
     }
 
     public synchronized void subscribe(ClientHandler handler) {
@@ -69,6 +68,10 @@ public class MyServer {
             }
         }
         return false;
+    }
+
+    public AuthenticationService getAuthenticationService() {
+        return authenticationService;
     }
 
     public synchronized void broadcastMessage(String message, ClientHandler sender, boolean isServerMessage) throws IOException {

@@ -34,13 +34,7 @@ public class StartClient extends Application {
 
     }
 
-    public static void main(String[] args) {
-        launch();
-    }
-
     private void openAuthDialog() throws IOException {
-
-
         FXMLLoader authLoader = new FXMLLoader(StartClient.class.getResource("auth-view.fxml"));
 
         authStage = new Stage();
@@ -73,6 +67,10 @@ public class StartClient extends Application {
 
     }
 
+    public static void main(String[] args) {
+        launch();
+    }
+
     public void openChatDialog() {
         authStage.close();
         primaryStage.show();
@@ -83,6 +81,13 @@ public class StartClient extends Application {
 
     public void showErrorAlert(String title, String errorMessage){
         Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(errorMessage);
+        alert.show();
+    }
+
+    public void showInformationAlert(String title, String errorMessage) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
         alert.setHeaderText(errorMessage);
         alert.show();

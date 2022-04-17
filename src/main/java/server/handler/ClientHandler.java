@@ -20,6 +20,9 @@ public class ClientHandler {
     private static final String STOP_SERVER_CMD_PREFIX = "/stop";
     private static final String END_CLIENT_CMD_PREFIX = "/end";
     private static final String GET_CLIENTS_CMD_PREFIX = "AAAAAA";
+    private static final String REG_CMD_PREFIX = "/reg"; //+ login + pass + username
+    private static final String REGOK_CMD_PREFIX = "/regok"; //
+    private static final String REGERR_CMD_PREFIX = "/regerr"; // + error message
 
     private MyServer myServer;
     private Socket clientSocket;
@@ -39,7 +42,7 @@ public class ClientHandler {
 
         new Thread(() -> {
             try {
-                authentication();
+                sign();
                 readMessage();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -53,7 +56,7 @@ public class ClientHandler {
         }).start();
     }
 
-    private void authentication() throws IOException {
+    private void sign() throws IOException {
         while (true) {
             String message = in.readUTF();
             if (message.startsWith(AUTH_CMD_PREFIX)) {
@@ -61,6 +64,8 @@ public class ClientHandler {
                 if (isSuccessAuth) {
                     break;
                 }
+            } else if (message.startsWith(REG_CMD_PREFIX)) {
+                processSignUp(message);
             } else {
                 out.writeUTF(AUTHERR_CMD_PREFIX + " Error authentication");
                 System.out.println("Authentication failed");
@@ -92,6 +97,28 @@ public class ClientHandler {
             return true;
         } else {
             out.writeUTF(AUTHERR_CMD_PREFIX + " Login or password not correct");
+            return false;
+        }
+    }
+
+    private boolean processSignUp(String message) throws IOException {
+        String[] parts = message.split("\\s+");
+        if (parts.length != 4) {
+            out.writeUTF(REGERR_CMD_PREFIX + " Error sign up. Incorrect query");
+        }
+        String login = parts[1];
+        String password = parts[2];
+        String username = parts[3];
+
+        AuthenticationService auth = myServer.getAuthenticationService();
+
+
+        if (auth.checkLoginByFree(login)) {
+            auth.createUser(login, password, username);
+            out.writeUTF(REGOK_CMD_PREFIX);
+            return true;
+        } else {
+            out.writeUTF(REGERR_CMD_PREFIX + " User with this username already exists");
             return false;
         }
     }

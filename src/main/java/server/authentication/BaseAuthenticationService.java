@@ -25,6 +25,16 @@ public class BaseAuthenticationService implements AuthenticationService {
     }
 
     @Override
+    public void createUser(String login, String password, String username) {
+
+    }
+
+    @Override
+    public Boolean checkLoginByFree(String login) {
+        return null;
+    }
+
+    @Override
     public void startAuthentication() {
         System.out.println("Start Authentication");
     }

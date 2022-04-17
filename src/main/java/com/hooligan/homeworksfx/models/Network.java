@@ -20,6 +20,10 @@ public class Network {
     private static final String END_CLIENT_CMD_PREFIX = "/end";
     private static final String GET_CLIENTS_CMD_PREFIX = "AAAAAA";
 
+    private static final String REG_CMD_PREFIX = "/reg"; //+ login + pass + username
+    private static final String REGOK_CMD_PREFIX = "/regok"; //
+    private static final String REGERR_CMD_PREFIX = "/regerr"; // + error message
+
     public static final String DEFAULT_HOST = "localhost";
     public static final int DEFAULT_PORT = 8186;
     private DataInputStream in;
@@ -54,16 +58,6 @@ public class Network {
 
     public DataOutputStream getOut() {
         return out;
-    }
-
-    public void sendMessage(String message) {
-        try {
-            out.writeUTF(message);
-            System.out.println(message);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("The message didn't send");
-        }
     }
 
     public void waitMessage(ChatController chatController) {
@@ -115,8 +109,34 @@ public class Network {
         return username;
     }
 
+    public void sendMessage(String message) {
+        try {
+            out.writeUTF(message);
+            System.out.println(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("The message didn't send");
+        }
+    }
+
     public void sendPrivateMessage(String selectedRecipient, String message) {
         sendMessage(String.format("%s %s %s", PRIVATE_MSG_CMD_PREFIX, selectedRecipient,message));
+    }
+
+    public String sendSignUpMessage(String login, String password, String username) {
+        try {
+            out.writeUTF(String.format("%s %s %s %s", REG_CMD_PREFIX, login, password, username));
+            String response = in.readUTF();
+            if (response.startsWith(REGOK_CMD_PREFIX)) {
+                return null;
+            } else {
+                return response.split("\\s+", 2)[1];
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+
     }
 }
 

@@ -15,11 +15,19 @@ public class AuthController {
     public PasswordField passwordField;
     private Network network;
     private StartClient startClient;
-
     @FXML
-    public void checkAuth() {
-        String login = loginField.getText().trim();
-        String password = passwordField.getText().trim();
+    private TextField loginReg;
+    @FXML
+    private PasswordField passwordReg;
+    @FXML
+    private TextField usernameReg;
+
+    public void checkAuth(String login, String password) {
+
+        if (login == null || password == null) {
+            startClient.showErrorAlert("Error input authentication", "The fields empty");
+
+        }
 
         if (login.length() == 0 || password.length() == 0) {
             startClient.showErrorAlert("Input error", "Fields can't be empty");
@@ -32,6 +40,35 @@ public class AuthController {
             startClient.openChatDialog();
         } else {
             startClient.showErrorAlert("Authentication error", authErrorMessage);
+        }
+    }
+
+    @FXML
+    public void checkAuth() {
+        String login = loginField.getText().trim();
+        String password = passwordField.getText().trim();
+        checkAuth(login, password);
+    }
+
+    @FXML
+    void signUp() {
+        String login = loginReg.getText().trim();
+        String password = passwordReg.getText().trim();
+        String username = usernameReg.getText().trim();
+
+        if (login.length() == 0 || password.length() == 0 || username.length() == 0) {
+            startClient.showErrorAlert("Error sign up", "Fields can't be empty");
+            return;
+        }
+
+        String signUpErrorMessage = network.sendSignUpMessage(login, password, username);
+
+        if (signUpErrorMessage == null) {
+//            startClient.showInformationAlert("Регистрация успешно пройдена", "Можете перейти к аутентификации");
+            startClient.showInformationAlert("You are signed up!", "Welcome");
+            checkAuth(login, password);
+        } else {
+            startClient.showErrorAlert("Error sign up", signUpErrorMessage);
         }
     }
 
