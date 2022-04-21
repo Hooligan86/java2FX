@@ -3,9 +3,7 @@ package server.handler;
 import server.MyServer;
 import server.authentication.AuthenticationService;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 import java.util.List;
 
@@ -146,7 +144,6 @@ public class ClientHandler {
             } else {
                 myServer.broadcastMessage(message, this);
             }
-
         }
 
     }
@@ -176,6 +173,8 @@ public class ClientHandler {
         out.writeUTF(msg);
         System.out.println(msg);
     }
+
+
 
     @Override
     public String toString() {

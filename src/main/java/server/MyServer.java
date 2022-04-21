@@ -5,10 +5,14 @@ import server.authentication.BaseAuthenticationService;
 import server.authentication.DBAuthenticationService;
 import server.handler.ClientHandler;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MyServer {
@@ -85,6 +89,8 @@ public class MyServer {
     }
 
     public synchronized void broadcastMessage(String message, ClientHandler sender) throws IOException {
+        String timeStamp = DateFormat.getInstance().format(new Date());
+        serverChatHistory(timeStamp + ": " + sender.getUsername() + " " + message + System.lineSeparator());
         broadcastMessage(message, sender, false);
     }
 
@@ -97,8 +103,10 @@ public class MyServer {
 
 
     public synchronized void sendPrivateMessage(ClientHandler sender, String recipient, String privateMessage) throws IOException {
+        String timeStamp = DateFormat.getInstance().format(new Date());
         for (ClientHandler client : clients) {
             if (client.getUsername().equals(recipient)) {
+//                serverChatHistory("/pmsg " + recipient + timeStamp + ": " + sender.getUsername() + " " + privateMessage + System.lineSeparator());
                 client.sendMessage(sender.getUsername(), privateMessage);
             }
         }
@@ -113,5 +121,13 @@ public class MyServer {
             client.sendClientsList(clients);
         }
 
+    }
+
+    private void serverChatHistory(String message){
+        try(BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("src/main/resources/ServerChatHistory", true))){
+            bufferedWriter.append(message);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

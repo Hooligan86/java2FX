@@ -59,7 +59,7 @@ public class StartClient extends Application {
 
         Scene scene = new Scene(fxmlLoader.load());
         primaryStage.setScene(scene);
-        primaryStage.setAlwaysOnTop(true);
+//        primaryStage.setAlwaysOnTop(true);
 //        stage.show();
 
         chatController = fxmlLoader.getController();
@@ -78,7 +78,6 @@ public class StartClient extends Application {
         network.waitMessage(chatController);
         chatController.setUsernameTitle(network.getUsername());
     }
-
     public void showErrorAlert(String title, String errorMessage){
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);

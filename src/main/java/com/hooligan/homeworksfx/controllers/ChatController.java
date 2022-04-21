@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 
+import java.io.*;
 import java.text.DateFormat;
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,28 +15,29 @@ import java.util.Date;
 
 public class ChatController {
 
-
     @FXML
     private TextArea chatField;
-
     @FXML
     private ListView<String> usersList = new ListView<>();
-
     @FXML
     private TextField textField;
-
     @FXML
     private Button sendButton;
     private String selectedRecipient;
-
     @FXML
     private Label usernameTitle;
-
     private Network network;
 
     @FXML
     void initialize() {
-//        usersList.setItems(FXCollections.observableArrayList("Martin_cat", "Bruce_wain", "Gray_Gandalf"));
+
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader("src/main/resources/ServerChatHistory"))) {
+            while (bufferedReader.ready()) {
+                chatField.appendText( bufferedReader.readLine() + System.lineSeparator());
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         textField.setOnAction(event -> sendMessage());
         sendButton.setOnAction(event -> sendMessage());
@@ -94,11 +96,16 @@ public class ChatController {
 
     public void appendMessage(String message) {
         String timeStamp = DateFormat.getInstance().format(new Date());
-        chatField.appendText(timeStamp);
-        chatField.appendText(System.lineSeparator());
-        chatField.appendText(message);
-        chatField.appendText(System.lineSeparator());
-        chatField.appendText(System.lineSeparator());
+        chatField.appendText(timeStamp + System.lineSeparator() + message + System.lineSeparator() + System.lineSeparator());
+        chatHistory(timeStamp + System.lineSeparator() + message + System.lineSeparator());
+    }
+
+    private void chatHistory(String message) {
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("src/main/resources/chatHistory", true))) {
+            bufferedWriter.append(message);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void appendServerMessage(String serverMessage) {
@@ -114,7 +121,7 @@ public class ChatController {
     public void updateUsersList(String[] users) {
         Arrays.sort(users);
         for (int i = 0; i < users.length; i++) {
-            if (users[i].equals(network.getUsername())){
+            if (users[i].equals(network.getUsername())) {
                 users[i] = ">>> " + users[i];
             }
         }

@@ -19,7 +19,6 @@ public class Network {
     private static final String STOP_SERVER_CMD_PREFIX = "/stop";
     private static final String END_CLIENT_CMD_PREFIX = "/end";
     private static final String GET_CLIENTS_CMD_PREFIX = "AAAAAA";
-
     private static final String REG_CMD_PREFIX = "/reg"; //+ login + pass + username
     private static final String REGOK_CMD_PREFIX = "/regok"; //
     private static final String REGERR_CMD_PREFIX = "/regerr"; // + error message
