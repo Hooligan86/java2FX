@@ -9,7 +9,11 @@ module com.hooligan.homeworksfx {
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
+    requires lombok;
+    requires java.sql;
 
     opens com.hooligan.homeworksfx to javafx.fxml;
     exports com.hooligan.homeworksfx;
+    exports com.hooligan.homeworksfx.controllers;
+    opens com.hooligan.homeworksfx.controllers to javafx.fxml;
 }
