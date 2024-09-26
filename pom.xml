@@ -112,7 +112,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.hooligan.homeworksfx/com.hooligan.homeworksfx.HelloApplication</mainClass>
+                            <mainClass>com.hooligan.homeworksfx/com.hooligan.homeworksfx.StartClient</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>
